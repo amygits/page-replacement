@@ -13,13 +13,13 @@ Loads the data file and returns a struct containing its information
 */
 struct test_scenario* load_test_data(char* filename) {
     
-    printf("\t- Loading test scenario...\n");
-    struct test_scenario* testData = (test_scenario*) malloc(sizeof(test_scenario));
+    printf("Loading test scenario...\n");
+    struct test_scenario* testData = (struct test_scenario*) malloc(sizeof(struct test_scenario));
     
     printf("\t- Opening file..");
     FILE* readFile = fopen(filename, "r");
-    printf("File opened.\n")
-    printf("\t- Attempting read..");
+    printf("File opened.\n");
+    printf("\t- Attempting read..\n");
     fscanf(readFile, "%d", &testData->page_count);
     printf("\t-- Page count: %d\n", testData->page_count);
     fscanf(readFile, "%d", &testData->frame_count);
@@ -34,5 +34,8 @@ struct test_scenario* load_test_data(char* filename) {
     }
        
     printf("Test scenario loaded. \n");
+    printf("\t-Closing file..");
+    fclose(readFile);
+    printf("File closed\n");
     return testData;
 }
