@@ -1,8 +1,11 @@
 
 /*
+ * Purpose: A file containing a set of functions to simulate a page table
+ * Runs FIFO, MFU, and LRU pace replacement algorithms
+ * 
  * @author Amy Ma
  * @version 10.3.21
- * Completion time: 
+ * Completion time: 12-14 hours
  */
 
 #include "PageTable.h"
@@ -39,6 +42,9 @@ struct queue {
     int* arr;
 };
 
+/*
+ * Initializes data structure
+ */
 struct queue* init_queue(int capacity) {
 
     struct queue* queue = (struct queue*) malloc(sizeof (struct queue));
@@ -53,13 +59,22 @@ struct queue* init_queue(int capacity) {
     return queue;
 }
 
+/*
+ * Checks if structure is full
+ * @parama struct* queue
+ * @return 1 if true
+ */
 int isFull(struct queue* queue) {
     if (queue->size == queue->capacity)
         return 1;
     else
         return 0;
 }
-
+/*
+ * Checks if structure is empty
+ * @parama struct* queue
+ * @return 1 if true
+ */
 int isEmpty(struct queue* queue) {
     if (queue->size == 0)
         return 1;
@@ -99,6 +114,9 @@ void push(struct queue* queue, int page) {
 
 }
 
+/*
+ * Swap function that swaps inserted item to "top" of list
+ */
 void swap(struct queue* queue, int page) {
     
     int swaps;
@@ -149,7 +167,11 @@ int pop(struct queue* queue){
     return queue->arr[queue->top--];
 }
 
-
+/*
+ * Performs the Least Recently Used algorithm on a STACK
+ * @param struct queue*, replacement page number
+ * @return page number of victim 
+ */
 int LRUreplace(struct queue* queue, int page){
     //printf("\t++ LRU Replacement\n");
 
@@ -183,6 +205,11 @@ int LRUreplace(struct queue* queue, int page){
     return bottomPage;
 }
 
+/*
+ * Performs the Most Frequently Used algorithm on a stack
+ * @param struct queue*, replacement page number
+ * @return page number of victim 
+ */
 int MFUreplace(struct queue* queue, int page){
     //printf("\t++ MFU Replacement\n");
 
@@ -256,24 +283,34 @@ struct page_table* page_table_create(int page_count, int frame_count, enum repla
 Shuts down the page table
  */
 void page_table_destroy(struct page_table** pt) {
-    printf("Destroying page table..\n");
+    //printf("Destroying page table..\n");
     
-    /*if ((*pt)->algorithm == FIFO) {
+    struct page_table* temp_table = (*pt);    
+    struct queue* temp_frame = (*pt)->frames;    
+    struct page_table_entry* entryAr = (*pt)->table;
+    if ((*pt)->algorithm == FIFO){
+        //printf("QUEUE destroyer\n");
+        for (int i = 0; i < (*pt)->frame_count; i++) {
+            dequeue((*pt)->frames);
+        }  
         
-        for (int i = 0; i < (*pt)->frames->size; i++) {
-        free((pt)->frames->arr[dequeue((pt)->frames)]);    
-        }
-        
-    } else {
-        for (int i =0; i < (*pt)->frames->size; i++){
-            free(*pt->frames->arr[pop((*pt)->frames)]);   
+    }
+    else {
+        //printf("STACK destroyer\n");
+        for (int i = 0; i < (*pt)->frame_count; i++){
+            pop((*pt)->frames);
         }
     }
-   */
-    free(pt);
-    pt = NULL;
+    free((*pt)->frames);
+    temp_frame = NULL;
+    
+    free((*pt)->table);
+    entryAr = NULL;
+    
+    free(*pt);
+    temp_table = NULL;
 
-    printf("Page table destroyed\n");
+    //printf("Page table destroyed\n");
 }
 
 /*

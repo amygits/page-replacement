@@ -1,6 +1,6 @@
 
 /*
- * 
+ * Purpose: A file containing a set of functions to load a data file.
  * @author Amy Ma
  * @version 10.3.21
  * Completion time: 30 min
