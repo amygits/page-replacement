@@ -256,24 +256,34 @@ struct page_table* page_table_create(int page_count, int frame_count, enum repla
 Shuts down the page table
  */
 void page_table_destroy(struct page_table** pt) {
-    printf("Destroying page table..\n");
+    //printf("Destroying page table..\n");
     
-    /*if ((*pt)->algorithm == FIFO) {
+    struct page_table* temp_table = (*pt);    
+    struct queue* temp_frame = (*pt)->frames;    
+    struct page_table_entry* entryAr = (*pt)->table;
+    if ((*pt)->algorithm == FIFO){
+        //printf("QUEUE destroyer\n");
+        for (int i = 0; i < (*pt)->frame_count; i++) {
+            dequeue((*pt)->frames);
+        }  
         
-        for (int i = 0; i < (*pt)->frames->size; i++) {
-        free((pt)->frames->arr[dequeue((pt)->frames)]);    
-        }
-        
-    } else {
-        for (int i =0; i < (*pt)->frames->size; i++){
-            free(*pt->frames->arr[pop((*pt)->frames)]);   
+    }
+    else {
+        //printf("STACK destroyer\n");
+        for (int i = 0; i < (*pt)->frame_count; i++){
+            pop((*pt)->frames);
         }
     }
-   */
-    free(pt);
-    pt = NULL;
+    free((*pt)->frames);
+    temp_frame = NULL;
+    
+    free((*pt)->table);
+    entryAr = NULL;
+    
+    free(*pt);
+    temp_table = NULL;
 
-    printf("Page table destroyed\n");
+    //printf("Page table destroyed\n");
 }
 
 /*
