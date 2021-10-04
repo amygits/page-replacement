@@ -21,16 +21,16 @@ struct test_scenario* load_test_data(char* filename) {
     printf("File opened.\n");
     printf("\t- Attempting read..\n");
     fscanf(readFile, "%d", &testData->page_count);
-    printf("\t-- Page count: %d\n", testData->page_count);
+    //printf("\t-- Page count: %d\n", testData->page_count);
     fscanf(readFile, "%d", &testData->frame_count);
-    printf("\t-- Frame count: %d\n", testData->frame_count);
+    //printf("\t-- Frame count: %d\n", testData->frame_count);
     fscanf(readFile, "%d", &testData->refstr_len);
-    printf("\t-- Ref str length: %d\n", testData->refstr_len);
+    //printf("\t-- Ref str length: %d\n", testData->refstr_len);
     
     int i;   
     for(i = 0; i < testData->refstr_len; i++){
         fscanf(readFile, "%d", &testData->refstr[i]);
-        printf("\t-- Ref str at page %d: %d\n", i, testData->refstr[i]);
+        //printf("\t-- Ref str at page %d: %d\n", i, testData->refstr[i]);
     }
        
     printf("Test scenario loaded. \n");
