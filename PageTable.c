@@ -1,7 +1,7 @@
 
 /*
  * @author Amy Ma
- * @version 10.2.21
+ * @version 10.3.21
  * Completion time: 
  */
 
@@ -72,7 +72,7 @@ int isEmpty(struct queue* queue) {
  */
 void enqueue(struct queue* queue, int page) {
 
-    printf("\t-- Adding page to queue..");
+    //printf("\t-- Adding page to queue..");
     if (isFull(queue)) {
         return;
     }
@@ -80,7 +80,7 @@ void enqueue(struct queue* queue, int page) {
     queue->rear = (queue->rear + 1) % queue->capacity;
     queue->arr[queue->rear] = page;
     queue->size = queue->size + 1;
-    printf("Page %d added to the queue\n", page);
+    //printf("Page %d added to the queue\n", page);
 }
 
 /*
@@ -88,14 +88,14 @@ void enqueue(struct queue* queue, int page) {
  */
 void push(struct queue* queue, int page) {
 
-    printf("\t-- Pushing page to stack..");
+    //printf("\t-- Pushing page to stack..");
     if (isFull(queue)) {
         return;
     }
 
     queue->arr[++queue->top] = page;
     queue->size = queue->size + 1;
-    printf("Page %d pushed to stack top @ %d\n", page, queue->top);
+    //printf("Page %d pushed to stack top @ %d\n", page, queue->top);
 
 }
 
@@ -105,75 +105,86 @@ void swap(struct queue* queue, int page) {
     
     for (int i = 0; i < queue->size; i++) {
         if (queue->arr[i] == page) {
-            printf("Performing stack swap\n");
+            //printf("Performing stack swap\n");
             swaps = queue->size - (i + 1);
         }
     }
-
+    
     for (int i = 0; i < swaps; i++) {
-        printf("Swap run #%d\n", i);
+        //printf("Swap run #%d\n", i);
         int temp = queue->arr[i];
         queue->arr[i] = queue->arr[i + 1];
         queue->arr[i + 1] = temp;
-        printf("Swapped arr[%d] and arr[%d] to %d, %d\n", 
-                i, (i + 1), queue->arr[i+1], queue->arr[i]);
+        //printf("Swapped arr[%d] and arr[%d] to %d, %d\n", 
+                //i, (i + 1), queue->arr[i+1], queue->arr[i]);
     }
-    printf("New Top: %d\n", queue->arr[queue->top]);
+    //printf("Bottom: ");
+    /*for (int i = 0; i < queue->size; i++){
+        printf(" %d", queue->arr[i]);
+    }*/
+    
+    //printf("\nNew Top: %d\n", queue->arr[queue->top]);
 }
 
 /*
  * removes item from queue
  */
-void dequeue(struct queue* queue) {
-    printf("Removing oldest item from queue..");
+int dequeue(struct queue* queue) {
+    //printf("Removing oldest item from queue..");
     if (isEmpty(queue))
-        return;
+        return INT_MIN;
+    int item = queue->arr[queue->front];
     queue->front = (queue->front + 1) % queue->capacity;
     queue->size = queue->size - 1;
-    printf("Removed\n");
+    return item;
+    //printf("Removed\n");
 }
 
 /*
- * removes top item from Stack
+ * removes item from stack
  */
-
-int pop(struct queue* queue) {
-    if (isEmpty(queue)) {
+int pop(struct queue* queue){
+    if(isEmpty(queue))
         return INT_MIN;
-    }
-    int delPage = queue->arr[queue->top--];
-
-    return delPage;
+    return queue->arr[queue->top--];
 }
 
+
 int LRUreplace(struct queue* queue, int page){
-    printf("\t++ LRU Replacement\n");
+    //printf("\t++ LRU Replacement\n");
 
     int bottom, tempTop, bottomPage;
     
-    tempTop = queue->top;
+    /*tempTop = queue->top;
     for (int i = 0; i < queue->size; i++) {
         bottom = queue->arr[tempTop--];
-    }
-    printf("bottom page: %d\n", bottom);
-    
+    }*/
+    bottom = 0;
+    //printf("\t+++ bottom FRAME: %d\n", bottom);
     bottomPage = queue->arr[bottom];
+    //printf("\t+++ current bottom page: %d\n", queue->arr[bottom]);
     queue->arr[bottom] = page;
+   // printf("\t+++ new bottom page: %d\n", queue->arr[bottom]);
     int swaps = queue->size - (bottom + 1);
-    for (int i = 0; i < swaps; i++) {
-        printf("Swap run #%d\n", i);
+    for (int i = bottom; i < swaps; i++) {
+        //printf("\t+++ Swap run #%d\n", i);
         int temp = queue->arr[i];
         queue->arr[i] = queue->arr[i + 1];
         queue->arr[i + 1] = temp;
-        printf("Swapped arr[%d] and arr[%d] to %d, %d\n", 
-                i, (i + 1), queue->arr[i+1], queue->arr[i]);
+        //printf("\t++++ Swapped arr[%d] and arr[%d] to %d, %d\n", 
+               //i, (i + 1), queue->arr[i+1], queue->arr[i]);
     }
-    printf("new top: %d\n", queue->arr[queue->top]);
+    //printf("Bottom: ");
+    for (int i = bottom; i < queue->size; i++){
+        //printf(" %d", queue->arr[i]);
+    }
+    
+    //printf("\n\t+++ new top: %d\n", queue->arr[queue->top]);
     return bottomPage;
 }
 
 int MFUreplace(struct queue* queue, int page){
-    printf("\t++ MFU Replacement\n");
+    //printf("\t++ MFU Replacement\n");
 
     int bottom, tempTop, bottomPage;
     
@@ -181,21 +192,21 @@ int MFUreplace(struct queue* queue, int page){
     for (int i = 0; i < queue->size; i++) {
         bottom = queue->arr[tempTop--];
     }
-    printf("bottom page: %d\n", bottom);
+    //printf("bottom page: %d\n", bottom);
     
     bottomPage = queue->arr[bottom];
     queue->arr[bottom] = page;
     int swaps = queue->size - (bottom + 1);
     for (int i = 0; i < swaps; i++) {
-        printf("Swap run #%d\n", i);
+        //printf("Swap run #%d\n", i);
         int temp = queue->arr[i];
         queue->arr[i] = queue->arr[i + 1];
         queue->arr[i + 1] = temp;
-        printf("Swapped arr[%d] and arr[%d] to %d, %d\n", 
-                i, (i + 1), queue->arr[i+1], queue->arr[i]);
+        //printf("Swapped arr[%d] and arr[%d] to %d, %d\n", 
+                //i, (i + 1), queue->arr[i+1], queue->arr[i]);
     }
-    printf("new top: %d\n", queue->arr[queue->top]);
-    return bottomPage;
+    //printf("new top: %d\n", queue->arr[queue->top]);
+    return bottom;
 }
 
 
@@ -205,14 +216,14 @@ int MFUreplace(struct queue* queue, int page){
  */
 int FIFOreplace(struct queue* queue, int page) {
 
-    printf("\t++ FIFO Replacement\n");
+    //printf("\t++ FIFO Replacement\n");
 
     int delpage = queue->arr[queue->front];
     queue->arr[queue->front] = page; // replaces current front with new content
     queue->rear = (queue->rear + 1) % queue->capacity; // rear (newest) is equal to the front (oldest)
     queue->front = (queue->front + 1) % queue->capacity; // changes front to next oldest
 
-    printf("Page %d replaced with page %d successfully\n", delpage, page);
+    //printf("Page %d replaced with page %d successfully\n", delpage, page);
     return delpage;
 }
 
@@ -222,7 +233,7 @@ Initializes page table
  */
 struct page_table* page_table_create(int page_count, int frame_count, enum replacement_algorithm algorithm, int verbose) {
 
-    printf("Initializing page table\n");
+    //printf("Initializing page table\n");
     struct page_table* newTable = (struct page_table*) malloc(sizeof (struct page_table));
 
     newTable->table = (struct page_table_entry*) malloc(page_count * sizeof (struct page_table_entry));
@@ -236,7 +247,7 @@ struct page_table* page_table_create(int page_count, int frame_count, enum repla
     newTable->frame_count = frame_count;
     newTable->fault_count = 0;
     newTable->algorithm = algorithm;
-    printf("Page table created\n");
+    //printf("Page table created\n");
 
     return newTable;
 }
@@ -246,16 +257,19 @@ Shuts down the page table
  */
 void page_table_destroy(struct page_table** pt) {
     printf("Destroying page table..\n");
-
-    /*for(int i = 0; i < (*pt)->page_count; i++){
-        free((*pt)->table[i]);
-    }*/
-    for (int i = 0; i < (*pt)->frames->size; i++) {
-        dequeue((*pt)->frames);
+    
+    /*if ((*pt)->algorithm == FIFO) {
+        
+        for (int i = 0; i < (*pt)->frames->size; i++) {
+        free((pt)->frames->arr[dequeue((pt)->frames)]);    
+        }
+        
+    } else {
+        for (int i =0; i < (*pt)->frames->size; i++){
+            free(*pt->frames->arr[pop((*pt)->frames)]);   
+        }
     }
-
-    free((*pt)->table);
-    free((*pt)->frames);
+   */
     free(pt);
     pt = NULL;
 
@@ -266,17 +280,17 @@ void page_table_destroy(struct page_table** pt) {
 Simulates the program accessing a particular page
  */
 void page_table_access_page(struct page_table *pt, int page) {
-    printf("Accessing page in page table..\n");
+    //printf("Accessing page in page table..\n");
 
     if (isEmpty(pt->frames) == 1) {
         if (pt->algorithm == FIFO) {
             enqueue(pt->frames, page);
             pt->table[page].frameNumber = pt->frames->rear;
-            printf("\t-- Added to empty queue\n");
+            //printf("\t-- Added to empty queue\n");
         } else {
             push(pt->frames, page);
             pt->table[page].frameNumber = pt->frames->top;
-            printf("\t-- Added to empty stack\n");
+            //printf("\t-- Added to empty stack\n");
         }
 
         pt->fault_count = pt->fault_count + 1;
@@ -287,9 +301,9 @@ void page_table_access_page(struct page_table *pt, int page) {
     } else {
         for (int i = 0; i < pt->frames->size; i++) {
             if (pt->frames->arr[i] == page) {
-                printf("\t-- Page %d already exists in frame\n", page);
+                //printf("\t-- Page %d already exists in frame\n", page);
                 pt->table[page].use_count = pt->table[page].use_count + 1;
-                printf("Use count for %d: %d\n", page, pt->table[page].use_count);
+                //printf("Use count for %d: %d\n", page, pt->table[page].use_count);
                 // Update for LRU, updates current item to "newest" and 
                 //makes adjustments for front = rear case
                 if (pt->algorithm == LRU) {
@@ -303,21 +317,23 @@ void page_table_access_page(struct page_table *pt, int page) {
             if (pt->algorithm == FIFO) {
                 enqueue(pt->frames, page);
                 pt->table[page].frameNumber = pt->frames->rear;
+                //printf("\t-- Page %d added to frame %d\n", page, pt->frames->rear);
             }
             else {
                 push(pt->frames, page);
                 pt->table[page].frameNumber = pt->frames->top;
+                //printf("\t-- Page %d added to frame %d\n", page, pt->frames->top);
             }
             pt->fault_count = pt->fault_count + 1;
             //printf("\t--- fault count check: %d\n", pt->fault_count);
             pt->table[page].isValid = 1;
             pt->table[page].use_count = 0;
-            printf("\t-- Page %d added to frame %d\n", page, pt->frames->rear);
+            
         } else if (isFull(pt->frames) == 1) {
 
             // FIFO implementation
             if (pt->algorithm == FIFO) {
-                printf("\t- Entering FIFO\n");
+                //printf("\t- Entering FIFO\n");
                 int replacePage = FIFOreplace(pt->frames, page);
                 pt->table[replacePage].isValid = 0;
                 //printf("page %d valid: %d\n", replacePage, pt->table[replacePage].isValid);
@@ -332,9 +348,22 @@ void page_table_access_page(struct page_table *pt, int page) {
             // LRU implementation
 
             if (pt->algorithm == LRU) {
-                printf("\t- Entering LRU\n");
+                //printf("\t- Entering LRU\n");
                 int replacePage = LRUreplace(pt->frames, page);
-                printf("\t+ Replace page number: %d\n", replacePage);
+                //printf("\t+ Replace page number: %d\n", replacePage);
+                pt->table[replacePage].isValid = 0;
+                pt->table[page].isValid = 1;
+                pt->table[page].frameNumber = pt->table[replacePage].frameNumber;
+                pt->table[page].use_count = 0;
+                pt->fault_count = pt->fault_count + 1;
+            }
+            
+            // MFU implementation
+            if (pt->algorithm == MFU) {
+                if (pt->algorithm == MFU) {
+                //printf("\t- Entering MFU\n");
+                int replacePage = MFUreplace(pt->frames, page);
+                //printf("\t+ Replace page number: %d\n", replacePage);
                 pt->table[replacePage].isValid = 0;
                 pt->table[page].isValid = 1;
                 pt->table[page].frameNumber = pt->table[replacePage].frameNumber;
@@ -342,16 +371,9 @@ void page_table_access_page(struct page_table *pt, int page) {
                 pt->fault_count = pt->fault_count + 1;
             }
 
-
-
-
-
-            // MFU implementation
-            if (pt->algorithm == MFU) {
-
             }
 
-            printf("Page access complete\n");
+            //printf("Page access complete\n");
 
         }
     }
